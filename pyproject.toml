@@ -2,7 +2,7 @@
 requires = ["wheel", 'setuptools==64.0.0']
 [project]
 name = "soarsdk"
-version = "1.0.0"
+version = "1.0.1"
 description = "API Wrapper and Objects for Splunk SOAR"
 readme = "README.md"
 license = { file= "license.txt"}
@@ -11,4 +11,4 @@ requires-python = ">=3.9"
 dependencies = ["requests", "colorama"]
 
 [project.urls]
-repository = "https://github.com/tylerjchuba/soarsdk" # placehodler
+repository = "https://github.com/tylerjchuba/soarsdk" 
