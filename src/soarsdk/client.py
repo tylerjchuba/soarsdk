@@ -38,6 +38,13 @@ class PhantomClient:
     def __init__(self, url: str, **kwargs):
         """
         Class responsible for handling connections and requests to the Splunk SOAR instance.
+        
+        Keyword Args:
+            url (str): Target Server Hostname
+            splunkToken (Optional[str]): Token for Authentication
+            username (Optional[str]): Username for Authentication
+            password (Optional[str]): Password for Authentication
+            verify (bool): Enable SSL Verification for requests to and from the Splunk SOAR instance
 
         Attributes:
             base_url (str): Base domain address of the Splunk SOAR instance
@@ -46,14 +53,6 @@ class PhantomClient:
             request_log (list): Cache of requests between the Client and the SOAR server
             _TLS_VERIFY (bool): SSL Verification for requests. Defaults to False
             session (requests.Session): Session object used for the requests library
-
-
-        Keyword Args:
-            url (str): Target Server Hostname
-            splunkToken (Optional[str]): Token for Authentication
-            username (Optional[str]): Username for Authentication
-            password (Optional[str]): Password for Authentication
-            verify (bool): Enable SSL Verification for requests to and from the Splunk SOAR instance
 
         """
         colorama.init()
@@ -134,8 +133,8 @@ class PhantomClient:
             self.base_url, auth=(username, password), verify=False
         )
         response.raise_for_status()
-        self._set_session_headers(self.base_url, self.session)
-        self.test_authorization(self.base_url, self.session)
+        self._set_session_headers()
+        self.test_authorization()
         username = None
         password = None
 
