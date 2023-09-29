@@ -9,10 +9,12 @@ This is the initial release and we will be adding additional functionality in th
 ~~~python
 from soarsdk.client import PhantomClient
 # Password authentication 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 
 # Token Authentication 
-phantom: PhantomClient = PhantomClient(token='token_string')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, soarToken='token_string')
 
 ~~~
 
@@ -51,7 +53,8 @@ This methodology makes it easier to adapt future functionality. By having a Phan
 from soarsdk.client import PhantomClient
 from soarsdk.objects import Artifact, Container
 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 
 container: Container = Container(name="soarsdk Library Example", label="any_label")
 artifact1: Artifact = Artifact(name="soarsdk Artifact 1", label="soarsdk 1")
@@ -69,7 +72,8 @@ To download an existing container on the server, you can initialize a container 
 from soarsdk.client import PhantomClient
 from soarsdk.objects import Artifact, Container
 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 
 existing_container: Container = Container(id=123)
 
@@ -88,7 +92,8 @@ from soarsdk.objects import Container
 from soarsdk.objects import Playbook
 from soarsdk.exceptions import PlaybookException 
 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 
 existing_container: Container = Container(id=123)
 
@@ -107,7 +112,8 @@ from soarsdk.objects import Container
 from soarsdk.objects import Playbook
 from soarsdk.exceptions import PlaybookException 
 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 
 existing_container: Container = Container(id=123)
 
@@ -127,7 +133,8 @@ from soarsdk.objects import Container
 from soarsdk.objects import Playbook
 from soarsdk.exceptions import PlaybookException 
 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 
 existing_container: Container = Container(id=123)
 
@@ -148,7 +155,8 @@ Approvals for a given playbook are associated within the "Playbook" object. To d
 from soarsdk.client import PhantomClient
 from soarsdk.objects import Artifact, Container
 
-phantom: PhantomClient = PhantomClient(username='username', password='password')
+url = 'https://localhost:8000"
+phantom: PhantomClient = PhantomClient(url=url, username='username', password='password')
 artifact = Artifact(name='dummy', label='dummy')
 container = Container(name='test', label='workbench', artifacts=[artifact])
 phantom.create_container(container)
