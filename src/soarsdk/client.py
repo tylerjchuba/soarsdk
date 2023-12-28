@@ -11,6 +11,9 @@ from requests import Response
 from requests.models import HTTPError
 from requests.structures import CaseInsensitiveDict
 
+from urllib3.exceptions import InsecureRequestWarning
+from urllib3 import disable_warnings
+
 from .exceptions import (
     ArtifactNotInitialized,
     ContainerNotInitialized,
@@ -64,6 +67,9 @@ class PhantomClient:
         self.requests_log: list = []
         self._TLS_VERIFY: bool = kwargs.get("verify", False)
 
+        if not self._TLS_VERIFY: 
+            disable_warnings(InsecureRequestWarning)
+
         # Detect if provided an incomplete username/password pairing
         if bool(kwargs.get("username")) ^ bool(kwargs.get("password")):
             raise AuthenticationError(
@@ -87,6 +93,8 @@ class PhantomClient:
             self.connect(**kwargs)
         else:
             self.test_authorization()
+            
+     
 
     def connect(
         self,
