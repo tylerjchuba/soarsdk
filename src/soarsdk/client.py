@@ -59,7 +59,7 @@ class PhantomClient:
         self.base_url: str = url + "/" if not url.endswith("/") else url
         self.rest_url = self.base_url + "rest/"
         # Cache for actions builder query
-        self.action_builder: dict = []
+        self.action_builder: dict = {}
         # Cache of requests & responses
         self.requests_log: list = []
         self._TLS_VERIFY: bool = kwargs.get("verify", False)
