@@ -74,7 +74,7 @@ class PhantomClientTests(unittest.TestCase):
     def test_run_playbooks_without_id(self):
         uninitialized_container: Container = Container(name="test_container")
         self.assertRaises(
-            soarsdk.Exceptions.ContainerNotInitialized,
+            soarsdk.exceptions.ContainerNotInitialized,
             self.phantom.run_playbooks,
             uninitialized_container,
         )
@@ -255,7 +255,6 @@ class PhantomClientTests(unittest.TestCase):
         self.phantom.create_artifacts(test_container, test_artifact)
         self.assertEqual(test_artifact.container_id, test_container.id)
         
-
     @patch("requests.Session.delete")
     def test_delete_artifact(self, mock_delete):
         mock_delete_response = Mock()
