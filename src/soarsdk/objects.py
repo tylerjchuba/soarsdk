@@ -175,6 +175,20 @@ class Artifact(PhantomObject):
         """@todo look through previous scripts to find appropriate hashing for equality comparisons"""
         return hash(self.name + self.label + self.id)
 
+class Indicator(PhantomObject):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.id: int = kwargs.get("id")
+        self.value: str = kwargs.get("value")
+        self.value_hash: str = kwargs.get("value_hash")
+        self.tenant: int = kwargs.get("tenant")
+        self.tags: list = kwargs.get("tags", [])
+        self.earliest_time: str = kwargs.get("earliest_time")
+        self.latest_time: str = kwargs.get("latest_time")
+        self.open_events: int = kwargs.get("open_events")
+        self.total_events: int = kwargs.get("total_events")
+        self.severity_counts = kwargs.get("severity_counts", [])
+        
 
 class Asset(PhantomObject):
     def __init__(self, **kwargs):
