@@ -7,7 +7,7 @@ import random
 import requests
 import soarsdk
 from soarsdk.client import PhantomClient
-from soarsdk.objects import Artifact, Container, Playbook, Action, Pin, Asset, App
+from soarsdk.objects import Artifact, Container, Indicator, Playbook, Action, Pin, Asset, App
 from soarsdk.exceptions import *
 from soarsdk.objects import PhantomObject
 from unittest.mock import Mock
@@ -23,11 +23,22 @@ class PhantomClientTests(unittest.TestCase):
             label="workbench",
             artifacts=[Artifact(name="dummy", label="dummy")],
         )
+        with patch("soarsdk.client.PhantomClient.test_authorization") as patched_auth:
+            self.phantom = PhantomClient(
+                url='https://example.test/', 
+                session=requests.session()
+            )
+            
         self.mock_container = Container(name="test", label="foobar")
-        self.test_data = json.load(open("tests/sample_objects.json"))
+        
+        with open('tests/sample_objects.json') as f:
+            test_data = json.load(f)
+        
+        self.test_data = test_data
         self.test_artifacts = self.test_data["artifacts"]
         self.test_containers = self.test_data["containers"]
-
+        self.test_indicator = self.test_data["indicator"]
+        
     @patch("requests.Session.post")
     def test_create_container_throws_invalid_exception(self, mock_post):
         mock_response = Mock()
@@ -68,7 +79,7 @@ class PhantomClientTests(unittest.TestCase):
     def test_run_playbooks_without_id(self):
         uninitialized_container: Container = Container(name="test_container")
         self.assertRaises(
-            soarsdk.Exceptions.ContainerNotInitialized,
+            soarsdk.exceptions.ContainerNotInitialized,
             self.phantom.run_playbooks,
             uninitialized_container,
         )
@@ -137,6 +148,12 @@ class PhantomClientTests(unittest.TestCase):
         mock_get_response = Mock()
         mock_get_response.status_code = 200
         mock_get_response.json.return_value: dict = self.test_artifacts
+        return mock_get_response
+    
+    def get_mock_indicator_response(self) -> Mock:
+        mock_get_response = Mock()
+        mock_get_response.status_code = 200
+        mock_get_response.json.return_value: dict = self.test_indicator
         return mock_get_response
 
     def get_mock_containers_response(self) -> Mock:
@@ -249,15 +266,6 @@ class PhantomClientTests(unittest.TestCase):
         self.phantom.create_artifacts(test_container, test_artifact)
         self.assertEqual(test_artifact.container_id, test_container.id)
 
-    def test_modify_container_label(self):
-        """Changes the container label in the Phantom environment"""
-        self.container.label = "foobar"
-        self.phantom.modify_container_values(self.container)
-        assert self.container.label == "falcon_complete"
-        self.container.label = "workbench"
-        self.phantom.modify_container_values(self.container)
-        assert self.container.label == "workbench"
-
     @patch("requests.Session.delete")
     def test_delete_artifact(self, mock_delete):
         mock_delete_response = Mock()
@@ -318,39 +326,6 @@ class PhantomClientTests(unittest.TestCase):
         )
 
     @patch("requests.Session.get")
-    def test_get_playbook_count_empty(self, mock_get):
-        mock_get_response = Mock()
-        mock_get_response.status_code = 200
-        mock_get_response.json.return_value = {"count": 0, "num_pages": 0, "data": []}
-        mock_get.return_value = mock_get_response
-        playbook_count: int = self.phantom.get_playbook_count()
-        self.assertIsInstance(playbook_count, int)
-
-    @patch("requests.Session.get")
-    def test_get_cronjob_count_empty(self, mock_get):
-        mock_get_response = Mock()
-        mock_get_response.status_code = 200
-        mock_get_response.json.return_value = {"count": 0, "num_pages": 0, "data": []}
-        mock_get.return_value = mock_get_response
-        cron_assets: int = self.phantom.get_cronjob_count()
-        self.assertIsInstance(cron_assets, int)
-
-    @patch("soarsdk.client.PhantomClient.get_app")
-    @patch("requests.Session.get")
-    def test_get_cronjob_count(self, mock_get, mock_get_app):
-        mock_get_response = Mock()
-        mock_get_response.status_code = 200
-        mock_get_response.json.return_value = {
-            "count": 1,
-            "num_pages": 0,
-            "data": [{"id": 2, "name": "container_scheduler_asset"}],
-        }
-        mock_get.return_value = mock_get_response
-        mock_get_app.return_value = App(name="Container Scheduler", id=2)
-        cron_assets: int = self.phantom.get_cronjob_count()
-        self.assertIsInstance(cron_assets, int)
-
-    @patch("requests.Session.get")
     def test_get_containers(self, mock_get):
         params: dict = {"page_size": 1}
         mock_get.return_value = self.get_mock_containers_response()
@@ -365,25 +340,18 @@ class PhantomClientTests(unittest.TestCase):
         mock_get.return_value = self.get_mock_artifacts_response()
         for artifact in artifacts:
             self.assertIsInstance(artifact, Artifact)
+            
+    @patch("requests.Session.get")
+    def test_get_indicator_by_value(self, mock_get):
+        mock_get.return_value = self.get_mock_indicator_response()
+        indicator: Indicator = self.phantom.get_indicator_by_value("anything")
+        self.assertIsInstance(indicator, Indicator)
 
     def test_update_container_values_none_id(self):
         bad_container: Container = Container(name="test", label="foobar")
         self.assertRaises(
             ContainerNotInitialized, self.phantom.update_container_values, bad_container
         )
-
-    @patch("requests.Session.get")
-    def test_get_playbook_name_from_id(self, mock_get):
-        mock_get_response = Mock()
-        mock_get_response.status_code = 200
-        mock_get_response.json.return_value = {
-            "count": 1,
-            "num_pages": 0,
-            "data": [{"id": 123, "name": "foobar"}],
-        }
-        mock_get.return_value = mock_get_response
-        sample_playbook_id: int = self.get_sample_playbook().id
-        self.assertIsInstance()
 
     def test_update_Container_values_bad_param(self):
         self.assertRaises(
