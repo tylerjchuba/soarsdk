@@ -7,7 +7,7 @@ import random
 import requests
 import soarsdk
 from soarsdk.client import PhantomClient
-from soarsdk.objects import Artifact, Container, Playbook, Action, Pin, Asset, App
+from soarsdk.objects import Artifact, Container, Indicator, Playbook, Action, Pin, Asset, App
 from soarsdk.exceptions import *
 from soarsdk.objects import PhantomObject
 from unittest.mock import Mock
@@ -30,10 +30,15 @@ class PhantomClientTests(unittest.TestCase):
             )
             
         self.mock_container = Container(name="test", label="foobar")
-        self.test_data = json.load(open("tests/sample_objects.json"))
+        
+        with open('tests/sample_objects.json') as f:
+            test_data = json.load(f)
+        
+        self.test_data = test_data
         self.test_artifacts = self.test_data["artifacts"]
         self.test_containers = self.test_data["containers"]
-
+        self.test_indicator = self.test_data["indicator"]
+        
     @patch("requests.Session.post")
     def test_create_container_throws_invalid_exception(self, mock_post):
         mock_response = Mock()
@@ -143,6 +148,12 @@ class PhantomClientTests(unittest.TestCase):
         mock_get_response = Mock()
         mock_get_response.status_code = 200
         mock_get_response.json.return_value: dict = self.test_artifacts
+        return mock_get_response
+    
+    def get_mock_indicator_response(self) -> Mock:
+        mock_get_response = Mock()
+        mock_get_response.status_code = 200
+        mock_get_response.json.return_value: dict = self.test_indicator
         return mock_get_response
 
     def get_mock_containers_response(self) -> Mock:
@@ -254,7 +265,7 @@ class PhantomClientTests(unittest.TestCase):
         test_artifact: Artifact = Artifact(name="Test Artifact", label="Test Artifact")
         self.phantom.create_artifacts(test_container, test_artifact)
         self.assertEqual(test_artifact.container_id, test_container.id)
-        
+
     @patch("requests.Session.delete")
     def test_delete_artifact(self, mock_delete):
         mock_delete_response = Mock()
@@ -329,6 +340,12 @@ class PhantomClientTests(unittest.TestCase):
         mock_get.return_value = self.get_mock_artifacts_response()
         for artifact in artifacts:
             self.assertIsInstance(artifact, Artifact)
+            
+    @patch("requests.Session.get")
+    def test_get_indicator_by_value(self, mock_get):
+        mock_get.return_value = self.get_mock_indicator_response()
+        indicator: Indicator = self.phantom.get_indicator_by_value("anything")
+        self.assertIsInstance(indicator, Indicator)
 
     def test_update_container_values_none_id(self):
         bad_container: Container = Container(name="test", label="foobar")
