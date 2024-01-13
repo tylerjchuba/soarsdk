@@ -405,6 +405,7 @@ class Container(PhantomObject):
         self.comments: list[str] = kwargs.get("comments", [])
         self.notes: list[Note] = kwargs.get("notes", [])
         self.data: list[dict] = kwargs.get("data", {})
+        self.due_time: str = kwargs.get("due_time")
 
     @property
     def artifact_count(self) -> int:
