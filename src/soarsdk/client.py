@@ -34,6 +34,7 @@ from .objects import (
     Pin,
     PhantomObject,
     Playbook,
+    Indicator
 )
 
 
@@ -863,6 +864,15 @@ class PhantomClient:
         )
         return [Artifact(**artifact) for artifact in artifacts]
 
+    def get_indicator_by_value(self, indicator_value) -> Indicator:
+        """Returns an Indicator object based on it's value"""
+        params: dict = {"indicator_value": indicator_value}
+        
+        indicator: Indicator = self._handle_request(
+            method="GET", url="indicator_by_value?", params=params, return_data_only=False
+        )
+        return Indicator(**indicator)
+    
     def get_playbooks(self, params: dict = {}) -> list[Playbook]:
         """Returns a list of Playbook objects based on the REST parameters provided"""
         playbooks: list[dict] = self._handle_request(
@@ -1054,7 +1064,7 @@ class PhantomClient:
         return_data_only: bool = kwargs.get("return_data_only", False)
 
         for key, value in params.items():
-            if key not in ["start_time", "sort", "order"] and "__in" not in key:
+            if key not in ["start_time", "sort", "order", "indicator_value"] and "__in" not in key:
                 if isinstance(value, str):
                     params[key]: str = json.dumps(value)
 

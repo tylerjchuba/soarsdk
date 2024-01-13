@@ -140,5 +140,40 @@
             "parent_container": null,
             "parent_artifact": null
         }
-    ]
+    ],
+    "indicator": {
+        "tags": [
+            "exclude_from_analysis"
+            ],
+            "id": 163,
+            "value": "www.internalwebsite.com",
+            "value_hash": "d5342b206053b160e4dc3e98eeac7248f084cdfbbecd0e234fa121187f95a51a",
+            "tenant": 0,
+            "earliest_time": "2023-12-28T00:53:51.316373Z",
+            "latest_time": "2023-12-28T19:42:34.375667Z",
+            "open_events": 15,
+            "total_events": 15,
+            "severity_counts": [
+            {
+            "name": "informational",
+            "count": 0
+            },
+            {
+            "name": "critical",
+            "count": 0
+            },
+            {
+            "name": "high",
+            "count": 0
+            },
+            {
+            "name": "low",
+            "count": 15
+            },
+            {
+            "name": "medium",
+            "count": 0
+            }
+            ]
+    }
 }
