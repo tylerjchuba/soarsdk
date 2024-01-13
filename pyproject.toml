@@ -2,7 +2,7 @@
 requires = ["wheel", 'setuptools==64.0.0']
 [project]
 name = "soarsdk"
-version = "1.0.1"
+version = "1.0.2"
 description = "API Wrapper and Objects for Splunk SOAR"
 readme = "README.md"
 license = { file= "license.txt"}
