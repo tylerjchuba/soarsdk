@@ -12,7 +12,7 @@ from soarsdk.client import PhantomClient
 phantom: PhantomClient = PhantomClient(username='username', password='password')
 
 # Token Authentication 
-phantom: PhantomClient = PhantomClient(token='token_string')
+phantom: PhantomClient = PhantomClient(splunkToken='token_string')
 
 ~~~
 

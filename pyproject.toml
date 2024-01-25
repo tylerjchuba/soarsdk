@@ -1,5 +1,5 @@
 [build-system]
-requires = ["wheel", 'setuptools==64.0.0']
+requires = ["wheel", 'setuptools']
 [project]
 name = "soarsdk"
 version = "1.0.1"
