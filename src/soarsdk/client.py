@@ -112,7 +112,7 @@ class PhantomClient:
                 kwargs["username"], kwargs["password"]
             )
         if kwargs.get("splunkToken"):
-            self.session = self.token_authenticate(kwargs["splunkToken"])
+            self.token_authenticate(kwargs["splunkToken"])
 
         self.test_authorization()
 
