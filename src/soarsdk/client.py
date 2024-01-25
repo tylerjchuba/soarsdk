@@ -108,7 +108,7 @@ class PhantomClient:
             splunkToken (str): Splunk SOAR generated token
         """
         if kwargs.get("username") and kwargs.get("password"):
-            self.session = self.password_authenticate(
+            self.password_authenticate(
                 kwargs["username"], kwargs["password"]
             )
         if kwargs.get("splunkToken"):
@@ -136,12 +136,8 @@ class PhantomClient:
             username (str): username for authentication
             password (str): password for authentication
         """
-        url: str = self.base_url + "browse"
-        response: requests.Response = self.session.get(
-            self.base_url, auth=(username, password), verify=False
-        )
-        response.raise_for_status()
-        self._set_session_headers()
+        
+        self.session.auth = (username, password)
         self.test_authorization()
         username = None
         password = None
